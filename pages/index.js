@@ -1,19 +1,52 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 
+import { Canvas } from "react-three-fiber";
+import SpinningBox from 'components/Box';
+import { softShadows, OrbitControls } from "drei";
+
+softShadows();
+
 export default function Home() {
+
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Create Next App</title>
+        <title>m3tamorphosis</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-      </main>
-    </div>
+      <Canvas shadowMap colorManagement camera={{ position: [-5, 2, 10], fov: 60 }}>
+        <ambientLight intensity={0.2}/>
+        <directionalLight
+          castShadow
+          position={[0, 10, 0]}
+          intensity={1.2}
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
+          shadow-camera-far={50}
+          shadow-camera-left={-10}
+          shadow-camera-right={10}
+          shadow-camera-top={10}
+          shadow-camera-bottom={-10}
+        />
+       
+        <pointLight position={[-10, 0, -20]} intensity={0.3}/>
+        <pointLight position={[0, -10, 0]} intensity={1.5}/>
+
+        <group>
+          <SpinningBox position={[0, 1, 0]} color="red" args={[3, 2, 1]} speed={2}/>
+          <SpinningBox position={[-2, 1, -5]} color="blue" speed={6}/>
+          <SpinningBox position={[5, 1, -2]} color="green" speed={6}/>
+
+          <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -3, 0]}>
+            <planeBufferGeometry attach='geometry' args={[100, 100]}/>
+            <shadowMaterial attach='material' opacity={0.2}/>
+          </mesh>
+        </group>
+
+        <OrbitControls/>
+      </Canvas>
+    </>
   )
 }
