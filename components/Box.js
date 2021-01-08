@@ -1,8 +1,8 @@
-import { Html, MeshWobbleMaterial, useTexture } from "drei";
+import { Html, MeshWobbleMaterial } from "drei";
 import { useRef, useState } from "react";
-import { useFrame } from "react-three-fiber"
+import { useFrame, useLoader } from "react-three-fiber"
 import { useSpring, a } from "react-spring/three";
-import Texture from './coverExample.png'; 
+import { TextureLoader } from "three";
 
 export default function SpinningBox({ position, factor, args, speed}){
     const mesh = useRef(null);
@@ -12,16 +12,18 @@ export default function SpinningBox({ position, factor, args, speed}){
     const [expand, setExpand] = useState(false);
 
     const props = useSpring({
-        scale: expand ? [1.4, 1.4, 1.4] : [1, 1, 1],
+        scale: expand ? [1.9, 1.9, 1.9] : [1.5, 1.5, 1.5],
     }); 
 
-    const texture = useTexture(Texture)
+    const texture = useLoader(TextureLoader, "https://images.genius.com/a648b3698f94ea28fda903cbadddbb21.640x640x1.jpg")
  
     return (
         <a.mesh castShadow ref={mesh} position={position} onClick={() => setExpand(!expand)} scale={props.scale}>
             <boxBufferGeometry attach='geometry' args={args} />
             <MeshWobbleMaterial attach='material' map={texture} speed={speed} factor={factor} />
-
+            <Html bottom>
+                <h1>hi</h1>
+            </Html>
         </a.mesh> 
     )
 }
