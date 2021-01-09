@@ -18,10 +18,6 @@ const options = {
     }),
   ],
 
-  session: {
-    maxAge: 30 * 24 * 60 * 60,
-  },
-
   jwt: true,
 
   callbacks: {

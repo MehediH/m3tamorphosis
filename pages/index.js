@@ -7,7 +7,7 @@ import { softShadows, OrbitControls, shaderMaterial, Stars, Html} from "drei";
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { FaSpotify } from "react-icons/fa";
 import { useSession, signin, signout, getSession, signOut } from "next-auth/client";
-import { prominent } from 'color.js'
+import { prominent, average } from 'color.js'
 
 softShadows();
 
@@ -40,6 +40,7 @@ export default function Home() {
   const mesh = useRef(null);
   const [ session, loading ] = useSession();
   const [playing, setPlaying] = useState();
+  const [player, setPlayer] = useState();
 
   useEffect(() => {
     getSession().then(async (session) => {
@@ -87,8 +88,8 @@ export default function Home() {
           paused: state.paused
         })
 
-        prominent(state.track_window.current_track.album.images[0].url, { amount: 2, format: 'hex' }).then(color => {
-          document.getElementsByTagName("body")[0].style.background = `linear-gradient(160deg, ${color[0]} 0%, ${color[1]} 100%)`;
+        average(state.track_window.current_track.album.images[0].url, { format: 'hex' }).then(color => {
+          document.getElementsByTagName("body")[0].style.background = `linear-gradient(160deg, ${color} 0%, ${color} 100%)`;
         })
 
        });
@@ -121,6 +122,8 @@ export default function Home() {
           
       // Connect to the player!
       player.connect();
+
+      setPlayer(player);
     };
   }
 
@@ -158,9 +161,9 @@ export default function Home() {
 
           {(session && playing) && (
             <Suspense fallback={null}>
-              <SpinningBox position={[0, 1, 0]} factor={0.5} args={[2, 2, 2]} speed={2} isPaused={playing.paused} cover={playing.tracks.current_track.album.images[0].url}/>
-              <SpinningBox position={[-2, 1, -5]} factor={0} speed={6} isPaused={playing.paused} cover={playing.tracks.previous_tracks.length > 0 ? playing.tracks.previous_tracks[0].album.images[0].url : null}/>
-              <SpinningBox position={[5, 1, -2]} factor={0} speed={6} isPaused={playing.paused} cover={playing.tracks.next_tracks.length > 0 ? playing.tracks.next_tracks[0].album.images[0].url : null}/>
+              <SpinningBox position={[0, 1, 0]} factor={0.5} args={[2, 2, 2]} speed={2} isPaused={playing.paused} player={player} track={playing.tracks.current_track.name} artists={playing.tracks.current_track.artists.map(a => a.name).join(", ")} cover={playing.tracks.current_track.album.images[0].url}/>
+              <SpinningBox position={[-2, 1, -5]} factor={0} speed={6} isPaused={playing.paused} player={player} action="prev" cover={playing.tracks.previous_tracks.length > 0 ? playing.tracks.previous_tracks[0].album.images[0].url : null}/>
+              <SpinningBox position={[5, 1, -2]} factor={0} speed={6} isPaused={playing.paused} player={player} action="next" cover={playing.tracks.next_tracks.length > 0 ? playing.tracks.next_tracks[0].album.images[0].url : null}/>
 {/* 
               <Html fullscreen className={styles.container}>
                 <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
@@ -180,8 +183,8 @@ export default function Home() {
           </Stars>
 
           
-          <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -3, 0]}>
-            <planeBufferGeometry attach='geometry' args={[100, 100]}/>
+          <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -2, 0]}>
+            <planeBufferGeometry attach='geometry' args={[300, 300]}/>
             <shadowMaterial attach='material' opacity={0.2}/>
             {/* <colorMaterial attach='material'/> */}
           </mesh>
