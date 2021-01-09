@@ -4,14 +4,15 @@ import styles from '../styles/Home.module.scss'
 import { Canvas, extend } from "react-three-fiber";
 import SpinningBox from 'components/Box';
 import { softShadows, OrbitControls, shaderMaterial, Stars, Html} from "drei";
-import { Suspense, useRef, useState } from 'react';
-// import { Color } from "three";
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { FaSpotify } from "react-icons/fa";
+import { useSession, signin, signout, getSession, signOut } from "next-auth/client";
+import { prominent } from 'color.js'
 
 softShadows();
 
 // import glsl from 'babel-plugin-glsl/macro'
-
+// import { Color } from "three";
 // const ColorMaterial = shaderMaterial(
 //   { time: 0, color: new Color(0.2, 0.0, 0.1) },
 //   // vertex shader
@@ -37,7 +38,91 @@ softShadows();
 
 export default function Home() {
   const mesh = useRef(null);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [ session, loading ] = useSession();
+  const [playing, setPlaying] = useState();
+
+  useEffect(() => {
+    getSession().then(async (session) => {
+      if(!session || !session.user) return;
+
+      initPlayer(session.user.accessToken)
+      loadPlayer(session.user.accessToken)
+    });
+  }, [])
+
+  const loadPlayer = (token) => {
+    const existingScript = document.getElementById('playerSDK');
+
+    if(existingScript) return;
+
+    const script = document.createElement('script');
+    script.id = 'playerSDK';
+    script.type = 'text/javascript';
+    script.async = false;
+    script.defer = true;
+    script.src = 'https://sdk.scdn.co/spotify-player.js';
+    script.onload = () => console.log("loaded");
+    script.onerror = (error) => console.error(error);
+
+    document.head.appendChild(script);
+  }
+
+  const initPlayer = (token) => {
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new Spotify.Player({
+        name: 'M3TAMORPHOSIS',
+        getOAuthToken: cb => { cb(token); }
+      });
+    
+      // Error handling
+      player.addListener('initialization_error', ({ message }) => { console.error(message); });
+      player.addListener('authentication_error', ({ message }) => { console.error(message); });
+      player.addListener('account_error', ({ message }) => { console.error(message); });
+      player.addListener('playback_error', ({ message }) => { console.error(message); });
+    
+      // Playback status updates
+      player.addListener('player_state_changed', state => { 
+        setPlaying({
+          tracks: state.track_window,
+          paused: state.paused
+        })
+
+        prominent(state.track_window.current_track.album.images[0].url, { amount: 2, format: 'hex' }).then(color => {
+          document.getElementsByTagName("body")[0].style.background = `linear-gradient(160deg, ${color[0]} 0%, ${color[1]} 100%)`;
+        })
+
+       });
+    
+      // Ready
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+      });
+    
+      // Not Ready
+      player.addListener('not_ready', ({ device_id }) => {
+        console.log('Device ID has gone offline', device_id);
+      });
+
+
+      player.getCurrentState().then(state => {
+        if (!state) {
+          console.error('User is not playing music through the Web Playback SDK');
+          return;
+        }
+
+        let {
+          current_track,
+          next_tracks: [next_track]
+        } = state.track_window;
+
+        console.log('Currently Playing', current_track);
+        console.log('Playing Next', next_track);
+      });
+          
+      // Connect to the player!
+      player.connect();
+    };
+  }
 
   return (
     <>
@@ -65,17 +150,21 @@ export default function Home() {
         <pointLight position={[0, -10, 0]} intensity={1.5}/>
 
         <group>
-          {!loggedIn && (
+          {!session && (
             <Html center>
-              <button className={styles.login}><FaSpotify/>Login with Spotify</button>
+              <button onClick={() => signin("spotify")} className={styles.login}><FaSpotify/>Login with Spotify</button>
             </Html>
           )}
 
-          {loggedIn && (
+          {(session && playing) && (
             <Suspense fallback={null}>
-              <SpinningBox position={[0, 1, 0]} factor={0.5} args={[2, 2, 2]} speed={2}/>
-              <SpinningBox position={[-2, 1, -5]} factor={0} speed={6}/>
-              <SpinningBox position={[5, 1, -2]} factor={0} speed={6}/>
+              <SpinningBox position={[0, 1, 0]} factor={0.5} args={[2, 2, 2]} speed={2} isPaused={playing.paused} cover={playing.tracks.current_track.album.images[0].url}/>
+              <SpinningBox position={[-2, 1, -5]} factor={0} speed={6} isPaused={playing.paused} cover={playing.tracks.previous_tracks.length > 0 ? playing.tracks.previous_tracks[0].album.images[0].url : null}/>
+              <SpinningBox position={[5, 1, -2]} factor={0} speed={6} isPaused={playing.paused} cover={playing.tracks.next_tracks.length > 0 ? playing.tracks.next_tracks[0].album.images[0].url : null}/>
+{/* 
+              <Html fullscreen className={styles.container}>
+                <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
+              </Html> */}
             </Suspense>
           )}
 

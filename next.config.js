@@ -6,10 +6,10 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
     webpack: (config) => {
-        config.module.rules.push({
-          test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-          loader: require.resolve("url-loader")
-        });
+        // config.module.rules.push({
+        //   test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+        //   loader: require.resolve("url-loader")
+        // });
 
         config.node = {
           fs: 'empty'

@@ -8,8 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "color.js": "^1.2.0",
     "drei": "^2.2.13",
     "next": "10.0.5",
+    "next-auth": "^3.1.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
@@ -21,10 +23,8 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "babel-plugin-glsl": "^1.0.0",
-    "fs": "0.0.1-security",
     "glslify": "^7.1.1",
     "next-transpile-modules": "^6.0.0",
-    "sass": "^1.32.2",
-    "url-loader": "^4.1.1"
+    "sass": "^1.32.2"
   }
 }
