@@ -10,6 +10,10 @@ module.exports = withTM({
           test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
           loader: require.resolve("url-loader")
         });
+
+        config.node = {
+          fs: 'empty'
+        }
     
         return config;
     }
