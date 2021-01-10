@@ -30,10 +30,9 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
         <>
             <a.mesh castShadow ref={mesh} position={position} scale={props.scale} onClick={handleAction}>
                 <boxBufferGeometry attach='geometry' args={args} />
-            
                 <MeshWobbleMaterial attach='material' map={texture} speed={speed} factor={factor} />
-
             </a.mesh> 
+
             <Text
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                 anchorX="center"
@@ -46,10 +45,12 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                 anchorX="center"
                 fontSize={0.2}
-                position={[0, -3.3, 0]}
+                textShad
+                position={[0, -3.4, 0]}
                 anchorY="bottom">
                     {artists}
             </Text>
+
         </>
     )
 }

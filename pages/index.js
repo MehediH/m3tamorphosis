@@ -2,11 +2,12 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 
 import { Canvas, extend } from "react-three-fiber";
-import SpinningBox from '@/components/Box';
+import UpcomingTracks from '@/components/UpcomingTracks';
+import CurrentTrack from '@/components/CurrentTrack';
 import { softShadows, OrbitControls, shaderMaterial, Stars, Html} from "drei";
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { FaSpotify } from "react-icons/fa";
-import { useSession, signin, signout, getSession, signOut } from "next-auth/client";
+import { useSession, signin, getSession, signOut } from "next-auth/client";
 import initPlayer from '../lib/initPlayer';
 import loadSDK from '../lib/loadSDK';
 
@@ -40,21 +41,17 @@ extend({ ColorMaterial })
 
 export default function Home() {
   const mesh = useRef(null);
-  const [ session, loading ] = useSession();
+  const [ session ] = useSession();
   const [ playing, setPlaying ] = useState();
 
   useEffect(() => {
     getSession().then(async (session) => {
       if(!session || !session.user) return;
 
-      console.log(session)
-
       initPlayer(session.user.accessToken, setPlaying);
       loadSDK();
     });
   }, [])
-
-
 
   return (
     <>
@@ -63,7 +60,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Canvas shadowMap colorManagement camera={{ position: [-5, 2, 10], fov: 60 }}>
+      <Canvas shadowMap colorManagement camera={{fov: 60, position: [1, -3, 13]}}>
         <Lights/>
 
         <group>
@@ -75,34 +72,32 @@ export default function Home() {
 
           {(session && playing) && (
             <Suspense fallback={null}>
-              <SpinningBox position={[0, 1, 0]} factor={0.5} args={[2, 2, 2]} speed={2} isPaused={playing.paused} track={playing.tracks.current_track.name} artists={playing.tracks.current_track.artists.map(a => a.name).join(", ")} cover={playing.tracks.current_track.album.images[0].url}/>
-              <SpinningBox position={[-2, 1, -5]} factor={0} speed={6} isPaused={playing.paused}  action="prev" cover={playing.tracks.previous_tracks.length > 0 ? playing.tracks.previous_tracks[0].album.images[0].url : null}/>
-              <SpinningBox position={[5, 1, -2]} factor={0} speed={6} isPaused={playing.paused} action="next" cover={playing.tracks.next_tracks.length > 0 ? playing.tracks.next_tracks[0].album.images[0].url : null}/>
+              <CurrentTrack track={playing.tracks.current_track} paused={playing.paused}/>
+              <UpcomingTracks tracks={playing.tracks.previous_tracks.reverse()} paused={playing.paused} reverse/>
+              <UpcomingTracks tracks={playing.tracks.next_tracks} paused={playing.paused}/>
 
-             
             </Suspense>
           )}
 
-        <Html  className={styles.container}>
-                <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
-              </Html>
+          { session && (
+            <Html fullscreen className={styles.container}>
+              <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
+            </Html>
+          )}
 
           <Stars
             ref={mesh}
-            radius={100} // Radius of the inner sphere (default=100)
-            depth={50} // Depth of area where stars should fit (default=50)
-            count={5000} // Amount of stars (default=5000)
-            factor={10} // Size factor (default=4)
-            saturation={1} // Saturation 0-1 (default=0)
-            fade // Faded dots (default=false)
-          >
-          </Stars>
-
+            radius={100} 
+            depth={50} 
+            count={5000} 
+            factor={10} 
+            saturation={1} 
+            fade
+          />
           
-          <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -2, 0]}>
+          <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -5, 0]}>
             <planeBufferGeometry attach='geometry' args={[300, 300]}/>
-            <shadowMaterial attach='material' opacity={0.2}/>
-           
+            <shadowMaterial attach='material' opacity={0.3}/>
           </mesh>
         </group> 
        

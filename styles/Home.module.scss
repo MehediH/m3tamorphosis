@@ -25,11 +25,13 @@
 }
 
 .logout{
-  position: absolute;
-  bottom: 50px;
-  left: 40%;
+  margin-bottom: 25px;
+  pointer-events: all;
 }
 
 .container{
-  display: block;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
