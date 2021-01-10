@@ -31,14 +31,39 @@ const options = {
 
     jwt: async (token, user, account, profile, isNewUser) => {
       if(account){
+        const now = new Date();
+        now.setHours(now.getHours() + 1); // Spotify refresh token expires every hour
+
         token.accessToken = account.accessToken;
         token.refreshToken = account.refreshToken;
+        token.accessTokenExpires = now.getTime();
         token.profile = profile;
+      }
+
+      if (Date.now() > token.accessTokenExpires) {
+        token = await generateNewToken(account.refreshToken);
       }
 
       return Promise.resolve(token);
     },
   },
 };
+
+const generateNewToken = async (refresh_token) => {
+  const newToken = await fetch('https://accounts.spotify.com/api/token', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      'grant_type': "refresh_token",
+      'refresh_token': refresh_token,
+      'client_id': process.env.SPOTIFY_ID,
+      'client_secret': process.env.SPOTIFY_SECRET
+    }),
+  }).then(res => res.json());
+
+  return newToken.access_token;
+}
 
 export default (req, res) => NextAuth(req, res, options);

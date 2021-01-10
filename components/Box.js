@@ -1,10 +1,10 @@
 import { Html, MeshWobbleMaterial, shaderMaterial, Text } from "drei";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useFrame, useLoader  } from "react-three-fiber"
 import { useSpring, a } from "react-spring/three";
 import { TextureLoader } from "three";
 
-export default function SpinningBox({ position, factor, args, speed, isPaused, track, artists, cover, action, player}){
+export default function SpinningBox({ position, factor, args, speed, isPaused, track, artists, cover, action }){
     const mesh = useRef(null);
 
     useFrame(() => ( mesh.current.rotation.x = mesh.current.rotation.y += (isPaused ? 0.0 : 0.01) ));
@@ -15,18 +15,13 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
 
     const texture = useLoader(TextureLoader, cover ? cover: "https://images.genius.com/a648b3698f94ea28fda903cbadddbb21.640x640x1.jpg")
    
-    const handleAction = () => {
-
+    const handleAction = () => {        
         if(action == "next"){
-            player.nextTrack();
+            window.player.nextTrack();
         } else if(action == "prev"){
-            player.previousTrack();
+            window.player.previousTrack();
         } else{
-            if(isPaused){
-                player.resume();
-            } else{
-                player.pause();
-            }
+            window.player.togglePlay();
         }
 
     }
