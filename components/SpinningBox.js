@@ -38,6 +38,8 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 anchorX="center"
                 fontSize={0.5}
                 position={[0, -2.8, 0]}
+                shadows={true}
+                texture
                 anchorY="middle">
                     {track}
             </Text>

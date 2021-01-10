@@ -10,6 +10,7 @@ import { FaSpotify } from "react-icons/fa";
 import { useSession, signin, getSession, signOut } from "next-auth/client";
 import initPlayer from '../lib/initPlayer';
 import loadSDK from '../lib/loadSDK';
+import takeOver from '../lib/takeOver';
 
 softShadows();
 
@@ -41,6 +42,8 @@ extend({ ColorMaterial })
 
 export default function Home() {
   const mesh = useRef(null);
+  const orbit = useRef(null);
+
   const [ session ] = useSession();
   const [ playing, setPlaying ] = useState();
 
@@ -70,7 +73,7 @@ export default function Home() {
             </Html>
           )}
 
-          {(session && playing) && (
+          {(session && playing?.deviceSelected) && (
             <Suspense fallback={null}>
               <CurrentTrack track={playing.tracks.current_track} paused={playing.paused}/>
               <UpcomingTracks tracks={playing.tracks.previous_tracks.reverse()} paused={playing.paused} reverse/>
@@ -79,9 +82,29 @@ export default function Home() {
             </Suspense>
           )}
 
+          {(session && playing?.deviceReady) && (
+            <Html fullscreen className={styles.intro}>
+              <div className={styles.box}>
+                <h1>m3tamorphosis is ready for playback</h1>
+                <p>Selected m3tamorphosis as a playback device on Spotify, or take-over playback.</p>
+                <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
+              </div>
+            </Html>
+          )}
+
+          {(session && !playing) && (
+            <Html fullscreen className={styles.intro}>
+              <div className={styles.box}>
+                <h1>m3tamorphosis</h1>
+                <p>Talking to Spotify...this will only take a few seconds!</p>
+              </div>
+            </Html>
+          )}
+
           { session && (
             <Html fullscreen className={styles.container}>
               <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
+              <button onClick={() => orbit.current.reset()} className={`${styles.login} ${styles.logout}`}>Reset</button>
             </Html>
           )}
 
@@ -101,7 +124,7 @@ export default function Home() {
           </mesh>
         </group> 
        
-        <OrbitControls/>
+        <OrbitControls ref={orbit}/>
         <colorMaterial attach='material'/>
 
       </Canvas>

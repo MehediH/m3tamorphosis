@@ -40,7 +40,7 @@ const options = {
         token.profile = profile;
       }
 
-      if (Date.now() > token.accessTokenExpires) {
+      if (Date.now() > token.accessTokenExpires && account) {
         token = await generateNewToken(account.refreshToken);
       }
 
