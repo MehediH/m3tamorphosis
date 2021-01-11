@@ -52,7 +52,6 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 anchorY="bottom">
                     {artists}
             </Text>
-
         </>
     )
 }
