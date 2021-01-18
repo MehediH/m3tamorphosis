@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 const CurrentTrack = ({ track, paused }) => {
     const [duration, setDuration] = useState(0);
     const [progress, setProgress] = useState(0);
+
     const main = useRef(null);
     
     const handleDrag = (e) => {
@@ -25,13 +26,11 @@ const CurrentTrack = ({ track, paused }) => {
                 }
 
                 setProgress(state.position);
-
-                console.log(lerp(0, duration, state.position))
             });
         }, 1000);
 
         return () => clearInterval(checkState); 
-    }, []);
+    }, [duration, progress]);
 
     const convertMS = ( milliseconds ) => {
         let hour, minute, seconds;
@@ -51,8 +50,6 @@ const CurrentTrack = ({ track, paused }) => {
         return `${minute}:${pad(2, seconds)}`;
     }
 
-    const lerp = (x, y, a) => x * (1 - a) + y * a
-
 
     return (
         <>
@@ -71,7 +68,7 @@ const CurrentTrack = ({ track, paused }) => {
                 <Plane args={[5.0, 0.1]} onClick={handleDrag} ref={main}>
                     <meshBasicMaterial color="hotpink"/>
                 </Plane>
-                <Plane args={[progress/60000, 0.1]} position={[-2.48 + ((progress/60000)/2.0), 0, 0.1]} onClick={handleDrag}>
+                <Plane args={[(progress/duration) * 5, 0.1]} position={[-2.48 + (((progress/duration) * 5)/2.0), 0, 0.1]} onClick={handleDrag}>
                     <meshBasicMaterial color="cyan"/>
                 </Plane>
 
