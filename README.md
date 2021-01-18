@@ -1,7 +1,3 @@
 # m3tamorphosis 
 
-hiiiiiiiiiiiiiiiiiiiiiiiiii
-
-helloooooooooooooo
-
-who diiis
+Experimenting with Next.js, Three.js, and the Spotify API :)
