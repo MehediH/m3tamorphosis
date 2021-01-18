@@ -11,8 +11,7 @@ const CurrentTrack = ({ track, paused }) => {
     const main = useRef(null);
     
     const handleDrag = (e) => {
-        console.log(e)
-        console.log(track)
+        window.player.seek(Math.round((e.uv.x)/100 * duration)*100);
     }
 
     useEffect(() => {
@@ -66,10 +65,10 @@ const CurrentTrack = ({ track, paused }) => {
 
             <group position={[0, -3.8, 0]}>
                 <Plane args={[5.0, 0.1]} onClick={handleDrag} ref={main}>
-                    <meshBasicMaterial color="hotpink"/>
+                    <meshBasicMaterial color="#E9EAED"/>
                 </Plane>
                 <Plane args={[(progress/duration) * 5, 0.1]} position={[-2.48 + (((progress/duration) * 5)/2.0), 0, 0.1]} onClick={handleDrag}>
-                    <meshBasicMaterial color="cyan"/>
+                    <meshBasicMaterial color="#1DB954"/>
                 </Plane>
 
                 <Text
