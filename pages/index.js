@@ -1,10 +1,10 @@
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
+
 import styles from '../styles/Home.module.scss'
 
-import { Canvas, extend } from "react-three-fiber";
-import UpcomingTracks from '@/components/UpcomingTracks';
-import CurrentTrack from '@/components/CurrentTrack';
-import { softShadows, OrbitControls, shaderMaterial, Stars, Html} from "drei";
+import { Canvas } from "react-three-fiber";
+import { softShadows, OrbitControls, Stars, Html} from "drei";
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { FaSpotify } from "react-icons/fa";
 import { useSession, signin, getSession, signOut } from "next-auth/client";
@@ -14,31 +14,9 @@ import takeOver from '../lib/takeOver';
 
 softShadows();
 
-import glsl from 'babel-plugin-glsl/macro'
-import { Color } from "three";
-import Lights from '@/components/Lights';
-const ColorMaterial = shaderMaterial(
-  { time: 0, color: new Color(0.2, 0.0, 0.1) },
-  // vertex shader
-  glsl`
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  // fragment shader
-  glsl`
-    uniform float time;
-    uniform vec3 color;
-    varying vec2 vUv;
-    void main() {
-      gl_FragColor.rgba = vec4(0.5 + 0.3 * sin(vUv.yxx + time) + color, 1.0);
-    }
-  `
-)
-
-extend({ ColorMaterial })
+const Lights = dynamic(() => import('@/components/Lights'), { ssr: false })
+const CurrentTrack = dynamic(() => import('@/components/CurrentTrack'), { ssr: false })
+const UpcomingTracks = dynamic(() => import('@/components/UpcomingTracks'), { ssr: false })
 
 export default function Home() {
   const mesh = useRef(null);
@@ -117,15 +95,16 @@ export default function Home() {
             saturation={1} 
             fade
           />
-          
+
           <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -5, 0]}>
             <planeBufferGeometry attach='geometry' args={[300, 300]}/>
             <shadowMaterial attach='material' opacity={0.3}/>
+            {/* <colorMaterial attach='material'/> */}
           </mesh>
         </group> 
        
         <OrbitControls ref={orbit}/>
-        <colorMaterial attach='material'/>
+        {/* <colorMaterial attach='material'/> */}
 
       </Canvas>
     </>

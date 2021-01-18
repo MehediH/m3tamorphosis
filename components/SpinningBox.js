@@ -1,4 +1,4 @@
-import { Html, MeshWobbleMaterial, shaderMaterial, Text } from "drei";
+import { MeshWobbleMaterial, Text } from "drei";
 import { useRef } from "react";
 import { useFrame, useLoader  } from "react-three-fiber"
 import { useSpring, a } from "react-spring/three";

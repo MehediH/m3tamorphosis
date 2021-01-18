@@ -1,4 +1,5 @@
-import SpinningBox from "./SpinningBox";
+import dynamic from 'next/dynamic'
+const SpinningBox = dynamic(() => import('./SpinningBox'), { ssr: false })
 
 const UpcomingTracks = ({ tracks, paused, reverse}) => {
     if(tracks.length === 0) return null;
