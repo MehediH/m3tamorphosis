@@ -1,22 +1,21 @@
 import Head from 'next/head'
-import dynamic from 'next/dynamic'
+import { FaSpotify } from "react-icons/fa";
 
-import styles from '../styles/Home.module.scss'
-
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas } from "react-three-fiber";
 import { softShadows, OrbitControls, Stars, Html} from "drei";
-import { Suspense, useEffect, useRef, useState } from 'react';
-import { FaSpotify } from "react-icons/fa";
+
+import styles from '../styles/Home.module.scss'
 import { useSession, signin, getSession, signOut } from "next-auth/client";
-import initPlayer from '../lib/initPlayer';
-import loadSDK from '../lib/loadSDK';
-import takeOver from '../lib/takeOver';
 
 softShadows();
 
-const Lights = dynamic(() => import('@/components/Lights'), { ssr: false })
-const CurrentTrack = dynamic(() => import('@/components/CurrentTrack'), { ssr: false })
-const UpcomingTracks = dynamic(() => import('@/components/UpcomingTracks'), { ssr: false })
+import Lights from '@/components/Lights';
+import CurrentTrack from '@/components/CurrentTrack';
+import UpcomingTracks from '@/components/UpcomingTracks';
+import initPlayer from '../lib/initPlayer';
+import loadSDK from '../lib/loadSDK';
+import takeOver from '../lib/takeOver';
 
 export default function Home() {
   const mesh = useRef(null);
