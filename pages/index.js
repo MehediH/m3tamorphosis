@@ -3,7 +3,7 @@ import { FaSpotify } from "react-icons/fa";
 
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas } from "react-three-fiber";
-import { softShadows, OrbitControls, Stars, Html} from "drei";
+import { softShadows, OrbitControls, Stars, Html, Text} from "drei";
 
 import styles from '../styles/Home.module.scss'
 import { useSession, signin, getSession, signOut } from "next-auth/client";
@@ -45,9 +45,22 @@ export default function Home() {
 
         <group>
           {!session && (
-            <Html center>
-              <button onClick={() => signin("spotify")} className={styles.login}><FaSpotify/>Login with Spotify</button>
-            </Html>
+            <>
+              <Text
+                color={'#fff'}
+                fontSize={1}
+                letterSpacing={0.02}
+                textAlign={'center'}
+                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+                position={[0, 1, 0]}
+                factor={-0.1}
+              >
+                m3tamorphosis
+              </Text>
+              <Html center>
+                <button onClick={() => signin("spotify")} className={styles.login}><FaSpotify/>Login with Spotify</button>
+              </Html>
+            </>
           )}
 
           {(session && playing?.deviceSelected) && (
@@ -60,26 +73,41 @@ export default function Home() {
           )}
 
           {(session && playing?.deviceReady) && (
+            <>
+              <Text
+                color={'#fff'}
+                fontSize={1}
+                letterSpacing={0.02}
+                textAlign={'center'}
+                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+                position={[0, 1, 0]}
+                factor={-0.1}
+              >
+                ready for playback
+              </Text>
             <Html fullscreen className={styles.intro}>
-              <div className={styles.box}>
-                <h1>m3tamorphosis is ready for playback</h1>
-                <p>Selected m3tamorphosis as a playback device on Spotify, or take-over playback.</p>
-                <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
-              </div>
+            <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
+
             </Html>
+            </>
           )}
 
           {(session && !playing) && (
-            <Html fullscreen className={styles.intro}>
-              <div className={styles.box}>
-                <h1>m3tamorphosis</h1>
-                <p>Talking to Spotify...this will only take a few seconds!</p>
-              </div>
-            </Html>
+             <Text
+              color={'#fff'}
+              fontSize={1}
+              letterSpacing={0.02}
+              textAlign={'center'}
+              font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+              position={[0, 1, 0]}
+              factor={-0.1}
+            >
+              talking to spotify...
+            </Text>
           )}
 
           { session && (
-            <Html fullscreen className={styles.container}>
+            <Html fullscreen className={styles.uiControls}>
               <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
               <button onClick={() => orbit.current.reset()} className={`${styles.login} ${styles.logout}`}>Reset</button>
             </Html>

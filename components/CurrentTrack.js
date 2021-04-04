@@ -59,6 +59,7 @@ const CurrentTrack = ({ track, paused }) => {
                 speed={2}
                 isPaused={paused}
                 track={track.name}
+                trackId={track.id}
                 artists={track.artists.map(a => a.name).join(", ")}
                 cover={track.album.images[0].url}
             />

@@ -1,8 +1,13 @@
 import dynamic from 'next/dynamic'
+import { useEffect } from 'react';
 const SpinningBox = dynamic(() => import('./SpinningBox'), { ssr: false })
 
 const UpcomingTracks = ({ tracks, paused, reverse}) => {
     if(tracks.length === 0) return null;
+
+    useEffect(() => {
+        console.log(tracks)
+    })
 
     return (
         tracks.map((track, index) => 
@@ -12,7 +17,8 @@ const UpcomingTracks = ({ tracks, paused, reverse}) => {
                 factor={0}
                 speed={6}
                 isPaused={paused}
-                action="next"
+                action={ reverse ? "prev" : "next" }
+                trackId={track.id}
                 cover={track.album.images[0].url}
             />
         )

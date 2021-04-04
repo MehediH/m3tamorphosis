@@ -71,3 +71,25 @@
     opacity: 1;
   }
 }
+
+.uiControls{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  bottom: 0;
+  pointer-events: none;
+
+  button{
+    pointer-events: all;
+    margin-bottom: 10px;
+    width: auto;
+    font-size: 14px;
+    height: auto;
+    padding: 10px 15px;
+    margin-right: 10px;
+
+    svg{
+      font-size: 14px;
+    }
+  }
+}
