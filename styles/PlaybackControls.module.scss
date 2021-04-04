@@ -1,0 +1,17 @@
+.playbackControls{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 50px;
+
+    svg{
+        font-size: 40px;
+        fill: white;
+        stroke: white;
+        transition: 0.3s all ease-in-out;
+        cursor: pointer;
+
+        &:hover{
+            opacity: 0.75;
+        }
+    }
+}

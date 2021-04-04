@@ -11,6 +11,7 @@ import { useSession, signin, getSession, signOut } from "next-auth/client";
 softShadows();
 
 import Lights from '@/components/Lights';
+import PlaybackControls from '@/components/PlaybackControls';
 import CurrentTrack from '@/components/CurrentTrack';
 import UpcomingTracks from '@/components/UpcomingTracks';
 import initPlayer from '../lib/initPlayer';
@@ -68,7 +69,7 @@ export default function Home() {
               <CurrentTrack track={playing.tracks.current_track} paused={playing.paused}/>
               <UpcomingTracks tracks={playing.tracks.previous_tracks.reverse()} paused={playing.paused} reverse/>
               <UpcomingTracks tracks={playing.tracks.next_tracks} paused={playing.paused}/>
-
+              <PlaybackControls paused={playing.paused}/>
             </Suspense>
           )}
 
@@ -86,8 +87,7 @@ export default function Home() {
                 ready for playback
               </Text>
             <Html fullscreen className={styles.intro}>
-            <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
-
+              <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
             </Html>
             </>
           )}
