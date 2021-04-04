@@ -47,23 +47,15 @@ export default function Home() {
   const updatePlaying = ( state, setupOnCall ) => {
     setPlaying(state);
 
+    console.log(state.disallows)
+
     if(setupOnCall){
       takeOver(userAccess, state.deviceId)
     }
   }
 
-  const hexToRgb = (hex) => {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
-  }
-
   const updateBackground = (color) => {
-    const prominentColorInRGB = hexToRgb(color);
-    const { r, g, b } = prominentColorInRGB
+    const [ r, g, b ] = color
 
     // http://www.w3.org/TR/AERT#color-contrast
     const brightness = Math.round(((parseInt(r) * 299) + (parseInt(g) * 587) + (parseInt(b) * 114)) / 1000);
@@ -107,7 +99,7 @@ export default function Home() {
                 letterSpacing={0.02}
                 textAlign={'center'}
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 1, 0]}
+                position={[0, 2.0, 0]}
                 factor={-0.1}
               >
                 m3tamorphosis
@@ -123,7 +115,7 @@ export default function Home() {
               <CurrentTrack track={playing.tracks.current_track} paused={playing.paused} textColor={textColor}/>
               <UpcomingTracks tracks={playing.tracks.previous_tracks.reverse()} paused={playing.paused} reverse/>
               <UpcomingTracks tracks={playing.tracks.next_tracks} paused={playing.paused}/>
-              <PlaybackControls paused={playing.paused} textColor={textColor}/>
+              <PlaybackControls paused={playing.paused} textColor={textColor} disallows={playing.disallows}/>
             </Suspense>
           )}
 
@@ -135,16 +127,15 @@ export default function Home() {
                 letterSpacing={0.02}
                 textAlign={'center'}
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 1, 0]}
+                position={[0, 2.0, 0]}
                 factor={-0.1}
                 color={textColor}
               >
-                playback switched to another device
+                Playing on another device
               </Text>
             <Html fullscreen className={styles.intro}>
               <button className={`${styles.login} ${styles.play}`} onClick={() => {
                 startPlayer(true);
-                
               }}><FaSpotify/>take over</button>
             </Html>
             </>
@@ -158,15 +149,15 @@ export default function Home() {
                 letterSpacing={0.02}
                 textAlign={'center'}
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 1, 0]}
+                position={[0, 2.0, 0]}
                 factor={-0.1}
                 color={textColor}
               >
-                ready for playback
+                Ready for playback
               </Text>
-            <Html fullscreen className={styles.intro}>
-              <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
-            </Html>
+              <Html fullscreen className={styles.intro}>
+                <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
+              </Html>
             </>
           )}
 
@@ -176,18 +167,18 @@ export default function Home() {
               letterSpacing={0.02}
               textAlign={'center'}
               font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-              position={[0, 1, 0]}
+              position={[0, 2.0, 0]}
               factor={-0.1}
               color={textColor}
             >
-              talking to spotify...
+              Talking to Spotify...
             </Text>
           )}
 
           { session && (
             <Html fullscreen className={`${styles.uiControls} ${ isFullscreen ? styles.fullScreenControls : '' }`}>
-              <button onClick={() => fullScreen()}><FiMaximize/> Fullscreen</button>
-              <button onClick={() => orbit.current.reset()}><FiBox/> Reset</button>
+              <button onClick={() => fullScreen()}><FiMaximize/>Fullscreen</button>
+              <button onClick={() => orbit.current.reset()}><FiBox/>Reset</button>
               <button onClick={() => signOut()}><FiLogOut/>Logout</button>
             </Html>
           )}
@@ -205,12 +196,10 @@ export default function Home() {
           <mesh receiveShadow rotation={[-Math.PI/2, 0, 0]} position={[0, -5, 0]}>
             <planeBufferGeometry attach='geometry' args={[300, 300]}/>
             <shadowMaterial attach='material' opacity={0.3}/>
-            {/* <colorMaterial attach='material'/> */}
           </mesh>
         </group> 
        
         <OrbitControls ref={orbit}/>
-        {/* <colorMaterial attach='material'/> */}
 
       </Canvas>
     </>
