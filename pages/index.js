@@ -25,14 +25,38 @@ export default function Home() {
   const [ session ] = useSession();
   const [ playing, setPlaying ] = useState();
 
+  const [ textColor, setTextColor ] = useState("#fff");
+
   useEffect(() => {
     getSession().then(async (session) => {
       if(!session || !session.user) return;
 
-      initPlayer(session.user.accessToken, setPlaying);
+      initPlayer(session.user.accessToken, setPlaying, updateBackground);
       loadSDK();
     });
   }, [])
+
+  const hexToRgb = (hex) => {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  const updateBackground = (color) => {
+    const prominentColorInRGB = hexToRgb(color);
+    const { r, g, b } = prominentColorInRGB
+
+    // http://www.w3.org/TR/AERT#color-contrast
+    const brightness = Math.round(((parseInt(r) * 299) + (parseInt(g) * 587) + (parseInt(b) * 114)) / 1000);
+    const textColour = (brightness > 125) ? '#000' : '#fff';
+
+    console.log(brightness, textColour)
+  
+    setTextColor(textColour)
+  }
 
   return (
     <>
@@ -66,10 +90,10 @@ export default function Home() {
 
           {(session && playing?.deviceSelected) && (
             <Suspense fallback={null}>
-              <CurrentTrack track={playing.tracks.current_track} paused={playing.paused}/>
+              <CurrentTrack track={playing.tracks.current_track} paused={playing.paused} textColor={textColor}/>
               <UpcomingTracks tracks={playing.tracks.previous_tracks.reverse()} paused={playing.paused} reverse/>
               <UpcomingTracks tracks={playing.tracks.next_tracks} paused={playing.paused}/>
-              <PlaybackControls paused={playing.paused}/>
+              <PlaybackControls paused={playing.paused} textColor={textColor}/>
             </Suspense>
           )}
 

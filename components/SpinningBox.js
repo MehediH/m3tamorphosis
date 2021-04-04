@@ -4,7 +4,7 @@ import { useFrame, useLoader  } from "react-three-fiber"
 import { useSpring, a } from "react-spring/three";
 import { TextureLoader } from "three";
 
-export default function SpinningBox({ position, factor, args, speed, isPaused, track, trackId, artists, cover, action }){
+export default function SpinningBox({ position, factor, args, speed, isPaused, track, trackId, artists, cover, action, textColor }){
     const mesh = useRef(null);
 
     useFrame(() => ( mesh.current.rotation.x = mesh.current.rotation.y += (isPaused ? 0.0 : 0.01) ));
@@ -66,7 +66,9 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 fontSize={0.5}
                 position={[0, -2.8, 0]}
                 shadows={true}
+                textShad
                 texture
+                color={textColor}
                 anchorY="middle">
                     {track}
             </Text>
@@ -75,7 +77,9 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 anchorX="center"
                 fontSize={0.2}
                 textShad
+                shadows={true}
                 position={[0, -3.4, 0]}
+                color={textColor}
                 anchorY="bottom">
                     {artists}
             </Text>

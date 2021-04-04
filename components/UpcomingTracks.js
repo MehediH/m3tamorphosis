@@ -5,10 +5,6 @@ const SpinningBox = dynamic(() => import('./SpinningBox'), { ssr: false })
 const UpcomingTracks = ({ tracks, paused, reverse}) => {
     if(tracks.length === 0) return null;
 
-    useEffect(() => {
-        console.log(tracks)
-    })
-
     return (
         tracks.map((track, index) => 
             <SpinningBox

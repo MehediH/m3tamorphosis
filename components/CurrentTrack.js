@@ -4,7 +4,7 @@ const SpinningBox = dynamic(() => import('./SpinningBox'), { ssr: false })
 import { Plane, Text } from "drei";
 import { useEffect, useRef, useState } from "react";
 
-const CurrentTrack = ({ track, paused }) => {
+const CurrentTrack = ({ track, paused, textColor }) => {
     const [duration, setDuration] = useState(0);
     const [progress, setProgress] = useState(0);
 
@@ -62,11 +62,12 @@ const CurrentTrack = ({ track, paused }) => {
                 trackId={track.id}
                 artists={track.artists.map(a => a.name).join(", ")}
                 cover={track.album.images[0].url}
+                textColor={textColor}
             />
 
             <group position={[0, -3.8, 0]}>
                 <Plane args={[5.0, 0.1]} onClick={handleDrag} ref={main}>
-                    <meshBasicMaterial color="#E9EAED"/>
+                    <meshBasicMaterial color={textColor}/>
                 </Plane>
                 <Plane args={[(progress/duration) * 5, 0.1]} position={[-2.48 + (((progress/duration) * 5)/2.0), 0, 0.1]} onClick={handleDrag}>
                     <meshBasicMaterial color="#1DB954"/>
@@ -77,6 +78,7 @@ const CurrentTrack = ({ track, paused }) => {
                     anchorX="center"
                     fontSize={0.2}
                     textShad
+                    color={textColor}
                     position={[-3.0, -0.1, 0]}
                     anchorY="bottom">
                      { convertMS(progress) }
@@ -88,6 +90,7 @@ const CurrentTrack = ({ track, paused }) => {
                     fontSize={0.2}
                     textShad
                     position={[3.0, -0.1, 0]}
+                    color={textColor}
                     anchorY="bottom">
                      { convertMS(duration) }
                 </Text>
