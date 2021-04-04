@@ -24,6 +24,33 @@
   }
 }
 
+.login{
+  display: block;
+  border: 0px;
+  background: white;
+  border-radius: 10px;
+  outline: 0;
+  width: 300px;
+  height: 50px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg{
+    margin-right: 10px;
+    fill: #1DB954;
+    font-size: 25px;
+  }
+  
+  &:hover{
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
+
+
 .logout{
   margin-bottom: 25px;
   pointer-events: all;
@@ -87,9 +114,33 @@
     height: auto;
     padding: 10px 15px;
     margin-right: 10px;
-
+    border: 0px;
+    background: white;
+    border-radius: 10px;
+    outline: 0;
+    cursor: pointer;
+    transition: 0.1s all ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
     svg{
+      margin-right: 10px;
       font-size: 14px;
     }
+    
+    &:hover{
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+  }
+}
+
+.fullScreenControls{
+  opacity: 0;
+  transition: 0.3s all ease-in-out;
+
+  &:hover{
+    opacity: 1;
   }
 }

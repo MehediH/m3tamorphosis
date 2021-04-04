@@ -7,7 +7,11 @@ import { TextureLoader } from "three";
 export default function SpinningBox({ position, factor, args, speed, isPaused, track, trackId, artists, cover, action, textColor }){
     const mesh = useRef(null);
 
-    useFrame(() => ( mesh.current.rotation.x = mesh.current.rotation.y += (isPaused ? 0.0 : 0.01) ));
+    useFrame(() =>  {
+        if(!mesh.current) return;
+
+        mesh.current.rotation.x = mesh.current.rotation.y += (isPaused ? 0.0 : 0.01)
+    });
     
     const props = useSpring({
         scale: isPaused ? [1.9, 1.9, 1.9] : [1.5, 1.5, 1.5],

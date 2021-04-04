@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { FaSpotify } from "react-icons/fa";
+import { FiBox, FiMaximize, FiLogOut } from "react-icons/fi";
 
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas } from "react-three-fiber";
@@ -27,6 +28,7 @@ export default function Home() {
 
   const [ textColor, setTextColor ] = useState("#fff");
   const [ userAccess, setUserAccess ] = useState("");
+  const [ isFullscreen, setIsFullscreen ] = useState(false);
 
   useEffect(() => {
     startPlayer();
@@ -72,6 +74,18 @@ export default function Home() {
 
   const stoppedPlaying = () => {
     setPlaying({ deviceSwitched: true });
+  }
+
+  const fullScreen = () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    }
   }
 
   return (
@@ -171,9 +185,10 @@ export default function Home() {
           )}
 
           { session && (
-            <Html fullscreen className={styles.uiControls}>
-              <button onClick={() => signOut()} className={`${styles.login} ${styles.logout}`}><FaSpotify/>Logout</button>
-              <button onClick={() => orbit.current.reset()} className={`${styles.login} ${styles.logout}`}>Reset</button>
+            <Html fullscreen className={`${styles.uiControls} ${ isFullscreen ? styles.fullScreenControls : '' }`}>
+              <button onClick={() => fullScreen()}><FiMaximize/> Fullscreen</button>
+              <button onClick={() => orbit.current.reset()}><FiBox/> Reset</button>
+              <button onClick={() => signOut()}><FiLogOut/>Logout</button>
             </Html>
           )}
 

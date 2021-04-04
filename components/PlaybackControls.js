@@ -16,7 +16,7 @@ export default function PlaybackControls({ paused, textColor }){
     }
 
     return (
-        <Html position={[-1.2, -4.5, 0]} className={`${styles.playbackControls} ${ textColor === "#000" ? styles.darkIcons : '' }`}>
+        <Html transform position={[-1.2, -4.5, 0]} className={`${styles.playbackControls} ${ textColor === "#000" ? styles.darkIcons : '' }`}>
             <FiSkipBack onClick={() => handleAction("prev")}/>
             { !paused ? <FiPause onClick={handleAction}/> : <FiPlay onClick={handleAction}/> }
             <FiSkipForward onClick={() => handleAction("next")}/>
