@@ -26,15 +26,29 @@ export default function Home() {
   const [ playing, setPlaying ] = useState();
 
   const [ textColor, setTextColor ] = useState("#fff");
+  const [ userAccess, setUserAccess ] = useState("");
 
   useEffect(() => {
+    startPlayer();
+  }, [])
+
+  const startPlayer = (setupOnCall=false) => {
     getSession().then(async (session) => {
       if(!session || !session.user) return;
 
-      initPlayer(session.user.accessToken, setPlaying, updateBackground);
-      loadSDK();
+      setUserAccess(session.user.accessToken);
+      initPlayer(session.user.accessToken, updatePlaying, updateBackground, stoppedPlaying, setupOnCall);
+      if(!setupOnCall) loadSDK();
     });
-  }, [])
+  }
+
+  const updatePlaying = ( state, setupOnCall ) => {
+    setPlaying(state);
+
+    if(setupOnCall){
+      takeOver(userAccess, state.deviceId)
+    }
+  }
 
   const hexToRgb = (hex) => {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -53,9 +67,11 @@ export default function Home() {
     const brightness = Math.round(((parseInt(r) * 299) + (parseInt(g) * 587) + (parseInt(b) * 114)) / 1000);
     const textColour = (brightness > 125) ? '#000' : '#fff';
 
-    console.log(brightness, textColour)
-  
     setTextColor(textColour)
+  }
+
+  const stoppedPlaying = () => {
+    setPlaying({ deviceSwitched: true });
   }
 
   return (
@@ -72,7 +88,7 @@ export default function Home() {
           {!session && (
             <>
               <Text
-                color={'#fff'}
+                color={textColor}
                 fontSize={1}
                 letterSpacing={0.02}
                 textAlign={'center'}
@@ -97,6 +113,29 @@ export default function Home() {
             </Suspense>
           )}
 
+          {(session && playing?.deviceSwitched) && (
+            <>
+              <Text
+                color={'#fff'}
+                fontSize={1}
+                letterSpacing={0.02}
+                textAlign={'center'}
+                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+                position={[0, 1, 0]}
+                factor={-0.1}
+                color={textColor}
+              >
+                playback switched to another device
+              </Text>
+            <Html fullscreen className={styles.intro}>
+              <button className={`${styles.login} ${styles.play}`} onClick={() => {
+                startPlayer(true);
+                
+              }}><FaSpotify/>take over</button>
+            </Html>
+            </>
+          )}
+
           {(session && playing?.deviceReady) && (
             <>
               <Text
@@ -107,6 +146,7 @@ export default function Home() {
                 font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                 position={[0, 1, 0]}
                 factor={-0.1}
+                color={textColor}
               >
                 ready for playback
               </Text>
@@ -118,13 +158,13 @@ export default function Home() {
 
           {(session && !playing) && (
              <Text
-              color={'#fff'}
               fontSize={1}
               letterSpacing={0.02}
               textAlign={'center'}
               font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
               position={[0, 1, 0]}
               factor={-0.1}
+              color={textColor}
             >
               talking to spotify...
             </Text>
