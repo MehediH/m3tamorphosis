@@ -1,8 +1,9 @@
-import { MeshWobbleMaterial, Text } from "drei";
+import { MeshWobbleMaterial } from "drei";
 import { useRef } from "react";
 import { useFrame, useLoader  } from "react-three-fiber"
 import { useSpring, a } from "react-spring/three";
 import { TextureLoader } from "three";
+import LargeText from "./LargeText";
 
 export default function SpinningBox({ position, factor, args, speed, isPaused, track, trackId, artists, cover, action, textColor }){
     const mesh = useRef(null);
@@ -64,29 +65,8 @@ export default function SpinningBox({ position, factor, args, speed, isPaused, t
                 <MeshWobbleMaterial attach='material' map={texture} speed={speed} factor={factor} />
             </a.mesh> 
 
-            <Text
-                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                anchorX="center"
-                fontSize={0.5}
-                position={[0, -2.8, 0]}
-                shadows={true}
-                textShad
-                texture
-                color={textColor}
-                anchorY="middle">
-                    {track}
-            </Text>
-            <Text
-                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                anchorX="center"
-                fontSize={0.2}
-                textShad
-                shadows={true}
-                position={[0, -3.4, 0]}
-                color={textColor}
-                anchorY="bottom">
-                    {artists}
-            </Text>
+            <LargeText body={track} position={[0, -2.8, 0]} fontSize={0.5} anchorX="center" anchorY="middle" color={textColor}/>
+            <LargeText body={artists} position={[0, -3.5, 0]} fontSize={0.2} anchorX="center" anchorY="bottom" color={textColor}/>
         </>
     )
 }

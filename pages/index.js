@@ -11,6 +11,7 @@ import { useSession, signin, getSession, signOut } from "next-auth/client";
 
 softShadows();
 
+import LargeText from '@/components/LargeText';
 import Lights from '@/components/Lights';
 import PlaybackControls from '@/components/PlaybackControls';
 import CurrentTrack from '@/components/CurrentTrack';
@@ -93,17 +94,7 @@ export default function Home() {
         <group>
           {!session && (
             <>
-              <Text
-                color={textColor}
-                fontSize={1}
-                letterSpacing={0.02}
-                textAlign={'center'}
-                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 2.0, 0]}
-                factor={-0.1}
-              >
-                m3tamorphosis
-              </Text>
+              <LargeText body="m3tamorphosis" position={[0, 2.0, 0]} factor={-0.1} fontSize={1} color={textColor}/>
               <Html center>
                 <button onClick={() => signin("spotify")} className={styles.login}><FaSpotify/>Login with Spotify</button>
               </Html>
@@ -121,40 +112,18 @@ export default function Home() {
 
           {(session && playing?.deviceSwitched) && (
             <>
-              <Text
-                color={'#fff'}
-                fontSize={1}
-                letterSpacing={0.02}
-                textAlign={'center'}
-                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 2.0, 0]}
-                factor={-0.1}
-                color={textColor}
-              >
-                Playing on another device
-              </Text>
-            <Html fullscreen className={styles.intro}>
-              <button className={`${styles.login} ${styles.play}`} onClick={() => {
-                startPlayer(true);
-              }}><FaSpotify/>take over</button>
-            </Html>
+              <LargeText body="Playing on another device" position={[0, 2.0, 0]} fontSize={1} factor={-0.1} color={textColor}/>
+              <Html fullscreen className={styles.intro}>
+                <button className={`${styles.login} ${styles.play}`} onClick={() => {
+                  startPlayer(true);
+                }}><FaSpotify/>take over</button>
+              </Html>
             </>
           )}
 
           {(session && playing?.deviceReady) && (
             <>
-              <Text
-                color={'#fff'}
-                fontSize={1}
-                letterSpacing={0.02}
-                textAlign={'center'}
-                font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                position={[0, 2.0, 0]}
-                factor={-0.1}
-                color={textColor}
-              >
-                Ready for playback
-              </Text>
+              <LargeText body="Ready for playback" position={[0, 2.0, 0]} factor={-0.1} fontSize={1} color={textColor}/>
               <Html fullscreen className={styles.intro}>
                 <button className={`${styles.login} ${styles.play}`} onClick={() => takeOver(session.user.accessToken, playing.deviceId)}><FaSpotify/> Start playing</button>
               </Html>
@@ -162,17 +131,7 @@ export default function Home() {
           )}
 
           {(session && !playing) && (
-             <Text
-              fontSize={1}
-              letterSpacing={0.02}
-              textAlign={'center'}
-              font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-              position={[0, 2.0, 0]}
-              factor={-0.1}
-              color={textColor}
-            >
-              Talking to Spotify...
-            </Text>
+            <LargeText body="Talking to Spotify..." position={[0, 2.0, 0]} factor={-0.1} color={textColor} fontSize={1}/>
           )}
 
           { session && (

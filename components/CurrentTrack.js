@@ -3,6 +3,7 @@ const SpinningBox = dynamic(() => import('./SpinningBox'), { ssr: false })
 
 import { Plane, Text } from "drei";
 import { useEffect, useRef, useState } from "react";
+import LargeText from "./LargeText";
 
 const CurrentTrack = ({ track, paused, textColor }) => {
     const [duration, setDuration] = useState(0);
@@ -73,27 +74,8 @@ const CurrentTrack = ({ track, paused, textColor }) => {
                     <meshBasicMaterial color="#1DB954"/>
                 </Plane>
 
-                <Text
-                    font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                    anchorX="center"
-                    fontSize={0.2}
-                    textShad
-                    color={textColor}
-                    position={[-3.0, -0.1, 0]}
-                    anchorY="bottom">
-                     { convertMS(progress) }
-                </Text>
-
-                <Text
-                    font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-                    anchorX="center"
-                    fontSize={0.2}
-                    textShad
-                    position={[3.0, -0.1, 0]}
-                    color={textColor}
-                    anchorY="bottom">
-                     { convertMS(duration) }
-                </Text>
+                <LargeText body={convertMS(progress)} position={[-3.0, -0.1, 0]} fontSize={0.2} anchorX="center" anchorY="bottom" color={textColor}/>
+                <LargeText body={convertMS(duration)} position={[3.0, -0.1, 0]} fontSize={0.2} anchorX="center" anchorY="bottom" color={textColor}/>
             </group>
            
         </>
