@@ -1,20 +1,22 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 
+const spotifyScopes = [
+  "streaming",
+  "user-read-email",
+  "user-read-private",
+  "user-library-read",
+  "user-library-modify",
+  "user-read-playback-state",
+  "user-modify-playback-state",
+]
+
 const options = {
   providers: [
     Providers.Spotify({
       clientId: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
-      scope: [
-        'streaming',
-        'user-read-email',
-        'user-read-private',
-        'user-library-read',
-        'user-library-modify',
-        'user-read-playback-state',
-        'user-modify-playback-state',
-      ]
+      scope: spotifyScopes.join(" "),
     }),
   ],
 
@@ -22,7 +24,7 @@ const options = {
 
   callbacks: {
     session: async (session, user) => {
-      if(session && user){
+      if (session && user) {
         session.user = user;
       }
 
@@ -30,7 +32,7 @@ const options = {
     },
 
     jwt: async (token, user, account, profile, isNewUser) => {
-      if(account){
+      if (account) {
         const now = new Date();
         now.setHours(now.getHours() + 1); // Spotify refresh token expires every hour
 
